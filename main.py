@@ -91,3 +91,30 @@ def odswiez_markery():
         p.marker = map_widget.set_marker(p.coords[0], p.coords[1], text=f"Punkt: {p.nazwa}\nTeren: {p.teren}")
     for w in pracownicy:
         w.marker = map_widget.set_marker(w.coords[0], w.coords[1], text=f"Pracownik: {w.imie} {w.nazwisko}\nPunkt: {w.punkt}")
+
+        # =================== TERENY ZALEWOWE ===================
+        # Kolumny w zakładce
+        frame_teren_form = Frame(frame_teren)
+        frame_teren_form.grid(row=0, column=0, padx=30, pady=10, sticky="n")
+        frame_teren_lista = Frame(frame_teren)
+        frame_teren_lista.grid(row=0, column=1, padx=30, pady=10, sticky="n")
+
+Label(frame_teren_form, text="Nazwa terenu:").grid(row=0, column=0, sticky="w")
+entry_nazwa_terenu = Entry(frame_teren_form)
+entry_nazwa_terenu.grid(row=1, column=0)
+Label(frame_teren_form, text="Lokalizacja (np. Warszawa):").grid(row=2, column=0, sticky="w")
+entry_lokalizacja_terenu = Entry(frame_teren_form)
+entry_lokalizacja_terenu.grid(row=3, column=0)
+Label(frame_teren_form, text="Opis:").grid(row=4, column=0, sticky="w")
+entry_opis_terenu = Entry(frame_teren_form)
+entry_opis_terenu.grid(row=5, column=0)
+button_dodaj_teren = Button(frame_teren_form, text="Dodaj teren", command=lambda: dodaj_teren())
+button_dodaj_teren.grid(row=6, column=0, pady=5)
+
+listbox_tereny = Listbox(frame_teren_lista, width=45)
+listbox_tereny.grid(row=0, column=0, columnspan=3)
+Button(frame_teren_lista, text="Edytuj", command=lambda: edytuj_teren()).grid(row=1, column=0, pady=5)
+Button(frame_teren_lista, text="Usuń", command=lambda: usun_teren()).grid(row=1, column=1, pady=5)
+Button(frame_teren_lista, text="Pokaż szczegóły", command=lambda: pokaz_szczegoly_terenu()).grid(row=1, column=2, pady=5)
+label_szczegoly_teren = Label(frame_teren_lista, text="", justify=LEFT)
+label_szczegoly_teren.grid(row=2, column=0, columnspan=3, sticky="w")
