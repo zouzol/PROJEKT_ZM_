@@ -281,3 +281,108 @@ def pokaz_szczegoly_punktu():
     )
     map_widget.set_position(punkt.coords[0], punkt.coords[1])
     map_widget.set_zoom(12)
+
+# =================== PRACOWNICY ===================
+frame_prac_form = Frame(frame_pracownik)
+frame_prac_form.grid(row=0, column=0, padx=30, pady=10, sticky="n")
+frame_prac_lista = Frame(frame_pracownik)
+frame_prac_lista.grid(row=0, column=1, padx=30, pady=10, sticky="n")
+
+Label(frame_prac_form, text="Imię:").grid(row=0, column=0, sticky="w")
+entry_imie = Entry(frame_prac_form)
+entry_imie.grid(row=1, column=0)
+Label(frame_prac_form, text="Nazwisko:").grid(row=2, column=0, sticky="w")
+entry_nazwisko = Entry(frame_prac_form)
+entry_nazwisko.grid(row=3, column=0)
+Label(frame_prac_form, text="Lokalizacja:").grid(row=4, column=0, sticky="w")
+entry_lokalizacja_pracownika = Entry(frame_prac_form)
+entry_lokalizacja_pracownika.grid(row=5, column=0)
+Label(frame_prac_form, text="Punkt monitoringu:").grid(row=6, column=0, sticky="w")
+combobox_punkt_pracownik = ttk.Combobox(frame_prac_form, state="readonly")
+combobox_punkt_pracownik.grid(row=7, column=0)
+button_dodaj_pracownika = Button(frame_prac_form, text="Dodaj pracownika", command=lambda: dodaj_pracownika())
+button_dodaj_pracownika.grid(row=8, column=0, pady=5)
+
+listbox_pracownicy = Listbox(frame_prac_lista, width=45)
+listbox_pracownicy.grid(row=0, column=0, columnspan=3)
+Button(frame_prac_lista, text="Edytuj", command=lambda: edytuj_pracownika()).grid(row=1, column=0, pady=5)
+Button(frame_prac_lista, text="Usuń", command=lambda: usun_pracownika()).grid(row=1, column=1, pady=5)
+Button(frame_prac_lista, text="Pokaż szczegóły", command=lambda: pokaz_szczegoly_pracownika()).grid(row=1, column=2, pady=5)
+label_szczegoly_pracownik = Label(frame_prac_lista, text="", justify=LEFT)
+label_szczegoly_pracownik.grid(row=2, column=0, columnspan=3, sticky="w")
+
+def dodaj_pracownika():
+    imie = entry_imie.get()
+    nazwisko = entry_nazwisko.get()
+    lokalizacja = entry_lokalizacja_pracownika.get()
+    punkt_idx = combobox_punkt_pracownik.current()
+    if not imie or not nazwisko or not lokalizacja or punkt_idx == -1:
+        messagebox.showerror("Błąd", "Uzupełnij dane i wybierz punkt monitoringu!")
+        return
+    punkt = punkty[punkt_idx]
+    pracownik = Pracownik(imie, nazwisko, punkt.nazwa, lokalizacja)
+    pracownicy.append(pracownik)
+    odswiez_pracownikow()
+    odswiez_markery()
+    entry_imie.delete(0, END)
+    entry_nazwisko.delete(0, END)
+    entry_lokalizacja_pracownika.delete(0, END)
+
+def edytuj_pracownika():
+    idx = listbox_pracownicy.curselection()
+    if not idx: return
+    idx = idx[0]
+    pracownik = pracownicy[idx]
+    entry_imie.delete(0, END)
+    entry_nazwisko.delete(0, END)
+    entry_lokalizacja_pracownika.delete(0, END)
+    entry_imie.insert(0, pracownik.imie)
+    entry_nazwisko.insert(0, pracownik.nazwisko)
+    entry_lokalizacja_pracownika.insert(0, pracownik.lokalizacja)
+    combobox_punkt_pracownik.set(pracownik.punkt)
+    button_dodaj_pracownika.config(text="Zapisz", command=lambda: zapisz_pracownika(idx))
+
+def zapisz_pracownika(idx):
+    imie = entry_imie.get()
+    nazwisko = entry_nazwisko.get()
+    lokalizacja = entry_lokalizacja_pracownika.get()
+    punkt_idx = combobox_punkt_pracownik.current()
+    if punkt_idx == -1: return
+    punkt = punkty[punkt_idx]
+    pracownicy[idx] = Pracownik(imie, nazwisko, punkt.nazwa, lokalizacja)
+    odswiez_pracownikow()
+    odswiez_markery()
+    button_dodaj_pracownika.config(text="Dodaj pracownika", command=dodaj_pracownika)
+    entry_imie.delete(0, END)
+    entry_nazwisko.delete(0, END)
+    entry_lokalizacja_pracownika.delete(0, END)
+
+def usun_pracownika():
+    idx = listbox_pracownicy.curselection()
+    if not idx: return
+    idx = idx[0]
+    pracownik = pracownicy.pop(idx)
+    if pracownik.marker:
+        pracownik.marker.delete()
+    odswiez_pracownikow()
+    odswiez_markery()
+
+def odswiez_pracownikow():
+    listbox_pracownicy.delete(0, END)
+    combobox_punkt_pracownik['values'] = [p.nazwa for p in punkty]
+    for w in pracownicy:
+        listbox_pracownicy.insert(END, f"{w.imie} {w.nazwisko} ({w.lokalizacja}) | Punkt: {w.punkt}")
+
+def pokaz_szczegoly_pracownika():
+    idx = listbox_pracownicy.curselection()
+    if not idx:
+        label_szczegoly_pracownik.config(text="Brak wybranego pracownika.")
+        return
+    w = pracownicy[idx[0]]
+    label_szczegoly_pracownik.config(
+        text=f"Imię: {w.imie}\nNazwisko: {w.nazwisko}\nLokalizacja: {w.lokalizacja}\nPunkt: {w.punkt}\nWspółrzędne: {w.coords}"
+    )
+    map_widget.set_position(w.coords[0], w.coords[1])
+    map_widget.set_zoom(12)
+
+root.mainloop()
