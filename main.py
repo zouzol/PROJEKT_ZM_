@@ -118,3 +118,18 @@ Button(frame_teren_lista, text="Usuń", command=lambda: usun_teren()).grid(row=1
 Button(frame_teren_lista, text="Pokaż szczegóły", command=lambda: pokaz_szczegoly_terenu()).grid(row=1, column=2, pady=5)
 label_szczegoly_teren = Label(frame_teren_lista, text="", justify=LEFT)
 label_szczegoly_teren.grid(row=2, column=0, columnspan=3, sticky="w")
+
+def dodaj_teren():
+    nazwa = entry_nazwa_terenu.get()
+    lokalizacja = entry_lokalizacja_terenu.get()
+    opis = entry_opis_terenu.get()
+    if not nazwa or not lokalizacja:
+        messagebox.showerror("Błąd", "Uzupełnij nazwę i lokalizację!")
+        return
+    teren = TerenZalewowy(nazwa, lokalizacja, opis)
+    tereny.append(teren)
+    odswiez_tereny()
+    odswiez_markery()
+    entry_nazwa_terenu.delete(0, END)
+    entry_lokalizacja_terenu.delete(0, END)
+    entry_opis_terenu.delete(0, END)
