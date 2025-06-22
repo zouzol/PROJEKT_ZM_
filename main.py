@@ -168,3 +168,21 @@ def usun_teren():
         teren.marker.delete()
     odswiez_tereny()
     odswiez_markery()
+
+def odswiez_tereny():
+    listbox_tereny.delete(0, END)
+    for t in tereny:
+        listbox_tereny.insert(END, f"{t.nazwa} ({t.lokalizacja})")
+    combobox_teren_punkt['values'] = [t.nazwa for t in tereny]
+
+def pokaz_szczegoly_terenu():
+    idx = listbox_tereny.curselection()
+    if not idx:
+        label_szczegoly_teren.config(text="Brak wybranego terenu.")
+        return
+    teren = tereny[idx[0]]
+    label_szczegoly_teren.config(
+        text=f"Nazwa: {teren.nazwa}\nLokalizacja: {teren.lokalizacja}\nOpis: {teren.opis}\nWspółrzędne: {teren.coords}"
+    )
+    map_widget.set_position(teren.coords[0], teren.coords[1])
+    map_widget.set_zoom(12)
