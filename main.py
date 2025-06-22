@@ -62,3 +62,11 @@ notebook.add(frame_teren, text="Tereny zalewowe")
 notebook.add(frame_punkt, text="Punkty monitoringu")
 notebook.add(frame_pracownik, text="Pracownicy")
 notebook.pack(expand=1, fill='both')
+
+# --- MAPA ---
+frame_mapa = Frame(root)
+frame_mapa.pack(fill='both', expand=1)
+map_widget = tkintermapview.TkinterMapView(frame_mapa, width=1300, height=400)
+map_widget.pack()
+map_widget.set_position(52.23, 21.0)
+map_widget.set_zoom(6)
