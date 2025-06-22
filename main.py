@@ -147,14 +147,24 @@ def edytuj_teren():
     entry_opis_terenu.insert(0, teren.opis)
     button_dodaj_teren.config(text="Zapisz", command=lambda: zapisz_teren(idx))
 
-    def zapisz_teren(idx):
-        nazwa = entry_nazwa_terenu.get()
-        lokalizacja = entry_lokalizacja_terenu.get()
-        opis = entry_opis_terenu.get()
-        tereny[idx] = TerenZalewowy(nazwa, lokalizacja, opis)
-        odswiez_tereny()
-        odswiez_markery()
-        button_dodaj_teren.config(text="Dodaj teren", command=dodaj_teren)
-        entry_nazwa_terenu.delete(0, END)
-        entry_lokalizacja_terenu.delete(0, END)
-        entry_opis_terenu.delete(0, END)
+def zapisz_teren(idx):
+    nazwa = entry_nazwa_terenu.get()
+    lokalizacja = entry_lokalizacja_terenu.get()
+    opis = entry_opis_terenu.get()
+    tereny[idx] = TerenZalewowy(nazwa, lokalizacja, opis)
+    odswiez_tereny()
+    odswiez_markery()
+    button_dodaj_teren.config(text="Dodaj teren", command=dodaj_teren)
+    entry_nazwa_terenu.delete(0, END)
+    entry_lokalizacja_terenu.delete(0, END)
+    entry_opis_terenu.delete(0, END)
+
+def usun_teren():
+    idx = listbox_tereny.curselection()
+    if not idx: return
+    idx = idx[0]
+    teren = tereny.pop(idx)
+    if teren.marker:
+        teren.marker.delete()
+    odswiez_tereny()
+    odswiez_markery()
