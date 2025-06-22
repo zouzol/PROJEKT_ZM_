@@ -133,3 +133,16 @@ def dodaj_teren():
     entry_nazwa_terenu.delete(0, END)
     entry_lokalizacja_terenu.delete(0, END)
     entry_opis_terenu.delete(0, END)
+
+def edytuj_teren():
+    idx = listbox_tereny.curselection()
+    if not idx: return
+    idx = idx[0]
+    teren = tereny[idx]
+    entry_nazwa_terenu.delete(0, END)
+    entry_lokalizacja_terenu.delete(0, END)
+    entry_opis_terenu.delete(0, END)
+    entry_nazwa_terenu.insert(0, teren.nazwa)
+    entry_lokalizacja_terenu.insert(0, teren.lokalizacja)
+    entry_opis_terenu.insert(0, teren.opis)
+    button_dodaj_teren.config(text="Zapisz", command=lambda: zapisz_teren(idx))
