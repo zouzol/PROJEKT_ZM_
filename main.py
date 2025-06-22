@@ -34,3 +34,13 @@ class PunktMonitoringu:
         self.lokalizacja = lokalizacja
         self.coords = get_coordinates(lokalizacja)
         self.marker = None
+
+
+class Pracownik:
+    def __init__(self, imie, nazwisko, punkt, lokalizacja):
+        self.imie = imie
+        self.nazwisko = nazwisko
+        self.punkt = punkt
+        self.lokalizacja = lokalizacja
+        self.coords = get_coordinates(lokalizacja)
+        self.marker = None
