@@ -16,3 +16,13 @@ def get_coordinates(location):
         return [latitude, longitude]
     except Exception:
         return [52.23, 21.0]  # fallback: Warszawa
+
+
+
+    class TerenZalewowy:
+        def __init__(self, nazwa, lokalizacja, opis):
+            self.nazwa = nazwa
+            self.lokalizacja = lokalizacja
+            self.opis = opis
+            self.coords = get_coordinates(lokalizacja)
+            self.marker = None
