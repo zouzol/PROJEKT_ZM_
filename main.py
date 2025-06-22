@@ -91,3 +91,10 @@ def odswiez_markery():
         p.marker = map_widget.set_marker(p.coords[0], p.coords[1], text=f"Punkt: {p.nazwa}\nTeren: {p.teren}")
     for w in pracownicy:
         w.marker = map_widget.set_marker(w.coords[0], w.coords[1], text=f"Pracownik: {w.imie} {w.nazwisko}\nPunkt: {w.punkt}")
+
+        # =================== TERENY ZALEWOWE ===================
+        # Kolumny w zakładce
+        frame_teren_form = Frame(frame_teren)
+        frame_teren_form.grid(row=0, column=0, padx=30, pady=10, sticky="n")
+        frame_teren_lista = Frame(frame_teren)
+        frame_teren_lista.grid(row=0, column=1, padx=30, pady=10, sticky="n")
