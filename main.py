@@ -19,10 +19,18 @@ def get_coordinates(location):
 
 
 
-    class TerenZalewowy:
-        def __init__(self, nazwa, lokalizacja, opis):
-            self.nazwa = nazwa
-            self.lokalizacja = lokalizacja
-            self.opis = opis
-            self.coords = get_coordinates(lokalizacja)
-            self.marker = None
+class TerenZalewowy:
+    def __init__(self, nazwa, lokalizacja, opis):
+        self.nazwa = nazwa
+        self.lokalizacja = lokalizacja
+        self.opis = opis
+        self.coords = get_coordinates(lokalizacja)
+        self.marker = None
+
+class PunktMonitoringu:
+    def __init__(self, nazwa, teren, lokalizacja):
+        self.nazwa = nazwa
+        self.teren = teren
+        self.lokalizacja = lokalizacja
+        self.coords = get_coordinates(lokalizacja)
+        self.marker = None
