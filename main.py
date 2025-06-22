@@ -186,3 +186,30 @@ def pokaz_szczegoly_terenu():
     )
     map_widget.set_position(teren.coords[0], teren.coords[1])
     map_widget.set_zoom(12)
+
+# =================== PUNKTY MONITORINGU ===================
+frame_punkt_form = Frame(frame_punkt)
+frame_punkt_form.grid(row=0, column=0, padx=30, pady=10, sticky="n")
+frame_punkt_lista = Frame(frame_punkt)
+frame_punkt_lista.grid(row=0, column=1, padx=30, pady=10, sticky="n")
+
+Label(frame_punkt_form, text="Nazwa punktu:").grid(row=0, column=0, sticky="w")
+entry_nazwa_punktu = Entry(frame_punkt_form)
+entry_nazwa_punktu.grid(row=1, column=0)
+Label(frame_punkt_form, text="Lokalizacja punktu:").grid(row=2, column=0, sticky="w")
+entry_lokalizacja_punktu = Entry(frame_punkt_form)
+entry_lokalizacja_punktu.grid(row=3, column=0)
+Label(frame_punkt_form, text="Teren zalewowy:").grid(row=4, column=0, sticky="w")
+combobox_teren_punkt = ttk.Combobox(frame_punkt_form, state="readonly")
+combobox_teren_punkt.grid(row=5, column=0)
+button_dodaj_punkt = Button(frame_punkt_form, text="Dodaj punkt", command=lambda: dodaj_punkt())
+button_dodaj_punkt.grid(row=6, column=0, pady=5)
+
+listbox_punkty = Listbox(frame_punkt_lista, width=45)
+listbox_punkty.grid(row=0, column=0, columnspan=3)
+Button(frame_punkt_lista, text="Edytuj", command=lambda: edytuj_punkt()).grid(row=1, column=0, pady=5)
+Button(frame_punkt_lista, text="Usuń", command=lambda: usun_punkt()).grid(row=1, column=1, pady=5)
+Button(frame_punkt_lista, text="Pokaż szczegóły", command=lambda: pokaz_szczegoly_punktu()).grid(row=1, column=2, pady=5)
+label_szczegoly_punkt = Label(frame_punkt_lista, text="", justify=LEFT)
+label_szczegoly_punkt.grid(row=2, column=0, columnspan=3, sticky="w")
+
