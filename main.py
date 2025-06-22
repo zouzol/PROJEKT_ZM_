@@ -118,3 +118,71 @@ Button(frame_teren_lista, text="Usuń", command=lambda: usun_teren()).grid(row=1
 Button(frame_teren_lista, text="Pokaż szczegóły", command=lambda: pokaz_szczegoly_terenu()).grid(row=1, column=2, pady=5)
 label_szczegoly_teren = Label(frame_teren_lista, text="", justify=LEFT)
 label_szczegoly_teren.grid(row=2, column=0, columnspan=3, sticky="w")
+
+def dodaj_teren():
+    nazwa = entry_nazwa_terenu.get()
+    lokalizacja = entry_lokalizacja_terenu.get()
+    opis = entry_opis_terenu.get()
+    if not nazwa or not lokalizacja:
+        messagebox.showerror("Błąd", "Uzupełnij nazwę i lokalizację!")
+        return
+    teren = TerenZalewowy(nazwa, lokalizacja, opis)
+    tereny.append(teren)
+    odswiez_tereny()
+    odswiez_markery()
+    entry_nazwa_terenu.delete(0, END)
+    entry_lokalizacja_terenu.delete(0, END)
+    entry_opis_terenu.delete(0, END)
+
+def edytuj_teren():
+    idx = listbox_tereny.curselection()
+    if not idx: return
+    idx = idx[0]
+    teren = tereny[idx]
+    entry_nazwa_terenu.delete(0, END)
+    entry_lokalizacja_terenu.delete(0, END)
+    entry_opis_terenu.delete(0, END)
+    entry_nazwa_terenu.insert(0, teren.nazwa)
+    entry_lokalizacja_terenu.insert(0, teren.lokalizacja)
+    entry_opis_terenu.insert(0, teren.opis)
+    button_dodaj_teren.config(text="Zapisz", command=lambda: zapisz_teren(idx))
+
+def zapisz_teren(idx):
+    nazwa = entry_nazwa_terenu.get()
+    lokalizacja = entry_lokalizacja_terenu.get()
+    opis = entry_opis_terenu.get()
+    tereny[idx] = TerenZalewowy(nazwa, lokalizacja, opis)
+    odswiez_tereny()
+    odswiez_markery()
+    button_dodaj_teren.config(text="Dodaj teren", command=dodaj_teren)
+    entry_nazwa_terenu.delete(0, END)
+    entry_lokalizacja_terenu.delete(0, END)
+    entry_opis_terenu.delete(0, END)
+
+def usun_teren():
+    idx = listbox_tereny.curselection()
+    if not idx: return
+    idx = idx[0]
+    teren = tereny.pop(idx)
+    if teren.marker:
+        teren.marker.delete()
+    odswiez_tereny()
+    odswiez_markery()
+
+def odswiez_tereny():
+    listbox_tereny.delete(0, END)
+    for t in tereny:
+        listbox_tereny.insert(END, f"{t.nazwa} ({t.lokalizacja})")
+    combobox_teren_punkt['values'] = [t.nazwa for t in tereny]
+
+def pokaz_szczegoly_terenu():
+    idx = listbox_tereny.curselection()
+    if not idx:
+        label_szczegoly_teren.config(text="Brak wybranego terenu.")
+        return
+    teren = tereny[idx[0]]
+    label_szczegoly_teren.config(
+        text=f"Nazwa: {teren.nazwa}\nLokalizacja: {teren.lokalizacja}\nOpis: {teren.opis}\nWspółrzędne: {teren.coords}"
+    )
+    map_widget.set_position(teren.coords[0], teren.coords[1])
+    map_widget.set_zoom(12)
