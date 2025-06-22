@@ -146,3 +146,15 @@ def edytuj_teren():
     entry_lokalizacja_terenu.insert(0, teren.lokalizacja)
     entry_opis_terenu.insert(0, teren.opis)
     button_dodaj_teren.config(text="Zapisz", command=lambda: zapisz_teren(idx))
+
+    def zapisz_teren(idx):
+        nazwa = entry_nazwa_terenu.get()
+        lokalizacja = entry_lokalizacja_terenu.get()
+        opis = entry_opis_terenu.get()
+        tereny[idx] = TerenZalewowy(nazwa, lokalizacja, opis)
+        odswiez_tereny()
+        odswiez_markery()
+        button_dodaj_teren.config(text="Dodaj teren", command=dodaj_teren)
+        entry_nazwa_terenu.delete(0, END)
+        entry_lokalizacja_terenu.delete(0, END)
+        entry_opis_terenu.delete(0, END)
