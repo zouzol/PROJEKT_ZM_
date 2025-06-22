@@ -70,3 +70,24 @@ map_widget = tkintermapview.TkinterMapView(frame_mapa, width=1300, height=400)
 map_widget.pack()
 map_widget.set_position(52.23, 21.0)
 map_widget.set_zoom(6)
+
+# ======= FUNKCJE MARKERY =======
+def odswiez_markery():
+    for t in tereny:
+        if t.marker:
+            t.marker.delete()
+            t.marker = None
+    for p in punkty:
+        if p.marker:
+            p.marker.delete()
+            p.marker = None
+    for w in pracownicy:
+        if w.marker:
+            w.marker.delete()
+            w.marker = None
+    for t in tereny:
+        t.marker = map_widget.set_marker(t.coords[0], t.coords[1], text=f"Teren: {t.nazwa}\n{t.opis}")
+    for p in punkty:
+        p.marker = map_widget.set_marker(p.coords[0], p.coords[1], text=f"Punkt: {p.nazwa}\nTeren: {p.teren}")
+    for w in pracownicy:
+        w.marker = map_widget.set_marker(w.coords[0], w.coords[1], text=f"Pracownik: {w.imie} {w.nazwisko}\nPunkt: {w.punkt}")
