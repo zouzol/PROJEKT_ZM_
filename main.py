@@ -186,3 +186,98 @@ def pokaz_szczegoly_terenu():
     )
     map_widget.set_position(teren.coords[0], teren.coords[1])
     map_widget.set_zoom(12)
+
+# =================== PUNKTY MONITORINGU ===================
+frame_punkt_form = Frame(frame_punkt)
+frame_punkt_form.grid(row=0, column=0, padx=30, pady=10, sticky="n")
+frame_punkt_lista = Frame(frame_punkt)
+frame_punkt_lista.grid(row=0, column=1, padx=30, pady=10, sticky="n")
+
+Label(frame_punkt_form, text="Nazwa punktu:").grid(row=0, column=0, sticky="w")
+entry_nazwa_punktu = Entry(frame_punkt_form)
+entry_nazwa_punktu.grid(row=1, column=0)
+Label(frame_punkt_form, text="Lokalizacja punktu:").grid(row=2, column=0, sticky="w")
+entry_lokalizacja_punktu = Entry(frame_punkt_form)
+entry_lokalizacja_punktu.grid(row=3, column=0)
+Label(frame_punkt_form, text="Teren zalewowy:").grid(row=4, column=0, sticky="w")
+combobox_teren_punkt = ttk.Combobox(frame_punkt_form, state="readonly")
+combobox_teren_punkt.grid(row=5, column=0)
+button_dodaj_punkt = Button(frame_punkt_form, text="Dodaj punkt", command=lambda: dodaj_punkt())
+button_dodaj_punkt.grid(row=6, column=0, pady=5)
+
+listbox_punkty = Listbox(frame_punkt_lista, width=45)
+listbox_punkty.grid(row=0, column=0, columnspan=3)
+Button(frame_punkt_lista, text="Edytuj", command=lambda: edytuj_punkt()).grid(row=1, column=0, pady=5)
+Button(frame_punkt_lista, text="Usuń", command=lambda: usun_punkt()).grid(row=1, column=1, pady=5)
+Button(frame_punkt_lista, text="Pokaż szczegóły", command=lambda: pokaz_szczegoly_punktu()).grid(row=1, column=2, pady=5)
+label_szczegoly_punkt = Label(frame_punkt_lista, text="", justify=LEFT)
+label_szczegoly_punkt.grid(row=2, column=0, columnspan=3, sticky="w")
+
+def dodaj_punkt():
+    nazwa = entry_nazwa_punktu.get()
+    lokalizacja = entry_lokalizacja_punktu.get()
+    teren_idx = combobox_teren_punkt.current()
+    if not nazwa or not lokalizacja or teren_idx == -1:
+        messagebox.showerror("Błąd", "Uzupełnij nazwę, lokalizację i wybierz teren!")
+        return
+    teren = tereny[teren_idx]
+    punkt = PunktMonitoringu(nazwa, teren.nazwa, lokalizacja)
+    punkty.append(punkt)
+    odswiez_punkty()
+    odswiez_markery()
+    entry_nazwa_punktu.delete(0, END)
+    entry_lokalizacja_punktu.delete(0, END)
+
+def edytuj_punkt():
+    idx = listbox_punkty.curselection()
+    if not idx: return
+    idx = idx[0]
+    punkt = punkty[idx]
+    entry_nazwa_punktu.delete(0, END)
+    entry_lokalizacja_punktu.delete(0, END)
+    entry_nazwa_punktu.insert(0, punkt.nazwa)
+    entry_lokalizacja_punktu.insert(0, punkt.lokalizacja)
+    combobox_teren_punkt.set(punkt.teren)
+    button_dodaj_punkt.config(text="Zapisz", command=lambda: zapisz_punkt(idx))
+
+def zapisz_punkt(idx):
+    nazwa = entry_nazwa_punktu.get()
+    lokalizacja = entry_lokalizacja_punktu.get()
+    teren_idx = combobox_teren_punkt.current()
+    if teren_idx == -1: return
+    teren = tereny[teren_idx]
+    punkty[idx] = PunktMonitoringu(nazwa, teren.nazwa, lokalizacja)
+    odswiez_punkty()
+    odswiez_markery()
+    button_dodaj_punkt.config(text="Dodaj punkt", command=dodaj_punkt)
+    entry_nazwa_punktu.delete(0, END)
+    entry_lokalizacja_punktu.delete(0, END)
+
+def usun_punkt():
+    idx = listbox_punkty.curselection()
+    if not idx: return
+    idx = idx[0]
+    punkt = punkty.pop(idx)
+    if punkt.marker:
+        punkt.marker.delete()
+    odswiez_punkty()
+    odswiez_markery()
+
+def odswiez_punkty():
+    listbox_punkty.delete(0, END)
+    combobox_teren_punkt['values'] = [t.nazwa for t in tereny]
+    combobox_punkt_pracownik['values'] = [p.nazwa for p in punkty]
+    for p in punkty:
+        listbox_punkty.insert(END, f"{p.nazwa} ({p.lokalizacja}) | Teren: {p.teren}")
+
+def pokaz_szczegoly_punktu():
+    idx = listbox_punkty.curselection()
+    if not idx:
+        label_szczegoly_punkt.config(text="Brak wybranego punktu.")
+        return
+    punkt = punkty[idx[0]]
+    label_szczegoly_punkt.config(
+        text=f"Nazwa: {punkt.nazwa}\nLokalizacja: {punkt.lokalizacja}\nTeren: {punkt.teren}\nWspółrzędne: {punkt.coords}"
+    )
+    map_widget.set_position(punkt.coords[0], punkt.coords[1])
+    map_widget.set_zoom(12)
